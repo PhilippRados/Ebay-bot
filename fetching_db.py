@@ -12,7 +12,8 @@ def ausgabe():
         print(daten[0], daten[1], daten[2], daten[3], daten[4])
 
 
-def delete(sql):
+def delete(id):
+    sql = f"delete from Personen where personalnr={id}"
     cursor.execute(sql)
     connection.commit()
 
@@ -23,6 +24,7 @@ def update():
     connection.commit()
 
 
+delete(8325)
 ausgabe()
 
 connection.close()
