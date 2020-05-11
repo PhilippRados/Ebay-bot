@@ -1,20 +1,20 @@
 import requests
-from testing_api import username, pw, receiver_ebay
 import smtplib
 
 
 class Search_Ebay:
     def __init__(self, keyword):
         self.keyword = keyword
-        self.get_price = requests.get(
-            f"https://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SECURITY-APPNAME=PhilippR-sellinga-PRD-3bcdef085-e041a9f7&RESPONSE-DATA-FORMAT=json&GLOBAL-ID=EBAY-DE&keywords={self.keyword}&REST-PAYLOAD&paginationInput.entriesPerPage=5").json()
+        try:
+            self.get_price = requests.get(
+                f"https://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SECURITY-APPNAME=PhilippR-sellinga-PRD-3bcdef085-e041a9f7&RESPONSE-DATA-FORMAT=json&GLOBAL-ID=EBAY-DE&keywords={self.keyword}&REST-PAYLOAD&paginationInput.entriesPerPage=5").json()
+        except:
+            print("Connection to API failed")
+
         self.entry_count = self.get_price[
             "findItemsByKeywordsResponse"][0]["searchResult"][0]["@count"]
 
     def getting_top_5(self):
-        # price = get_price[
-        #     "findItemsByKeywordsResponse"][0]["searchResult"][0]["item"][1]["sellingStatus"][0]["currentPrice"][0]["__value__"]
-
         self.entry_count = self.get_price[
             "findItemsByKeywordsResponse"][0]["searchResult"][0]["@count"]
 
@@ -44,14 +44,20 @@ class Search_Ebay:
                 server.ehlo_or_helo_if_needed()
 
                 server.login(sender, pw)
-                print(f"login worked")
+                print("login worked")
 
                 subject = "Ebay-Suche erfolgreich"
 
-                message = f'Subject:{subject}\n\nDer {self.keyword} kostet nur {float(price)}€. Hier ist der Link:\n{self.get_price["findItemsByKeywordsResponse"][0]["searchResult"][0]["item"][i]["viewItemURL"][0]}'
-                server.sendmail(sender, receiver, message)
+                message = f'Subject:{subject}\n\nDer {self.keyword} kostet nur {float(price)}€. Hier ist der Link:\n{self.get_price["findItemsByKeywordsResponse"][0]["searchResult"][0]["item"][i]["viewItemURL"][0]}'\
+                    .encode()
+
+                server.sendmail(
+                    sender, receiver, message)
+
                 server.quit()
 
 
 drucker = Search_Ebay("canon pixma pro 10-s")
-drucker.send_mail(username, receiver_ebay, 400)
+drucker.send_mail(username, receiver_ebay, 250)
+
+# Jeden Tag um 20:00 läuft das Programm über den Aufgabenplaner
