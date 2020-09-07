@@ -1,4 +1,5 @@
 import requests
+from testing_api import username, pw, receiver_ebay
 import smtplib
 
 
@@ -9,7 +10,7 @@ class Search_Ebay:
         # I cut out my APP-ID so you have to use your own
         try:
             self.get_price = requests.get(
-                f"https://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&RESPONSE-DATA-FORMAT=json&GLOBAL-ID=EBAY-DE&keywords={self.keyword}&REST-PAYLOAD&paginationInput.entriesPerPage=5").json()
+                f"https://svcs.ebay.com/services/search/FindingService/v1?OPERATION-NAME=findItemsByKeywords&SECURITY-APPNAME=PhilippR-sellinga-PRD-3bcdef085-e041a9f7&RESPONSE-DATA-FORMAT=json&GLOBAL-ID=EBAY-DE&keywords={self.keyword}&REST-PAYLOAD&paginationInput.entriesPerPage=5").json()
         except:
             print("Connection to API failed")
 
